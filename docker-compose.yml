@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  blackdagger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: keychainharbor/sast-keychain:latest
+    ports:
+      - "8080:8080"
+      - "8090:8090"
+    environment:
+      TERM: "xterm"
+      GOTTY_USERNAME: "keychainharbor"
+      GOTTY_PASSWORD: "sast-keychain"
+    volumes:
+      - ./scan_data:/work_dir/scan_data  # Mount ./scan_data from the host to /work_dir/scan_data in the container
+      - ./data/.blackdagger/dags:/root/.blackdagger/dags
+      - ./data/.blackdagger/logs:/root/.blackdagger/logs
+      - ./data/.blackdagger/suspend:/root/.blackdagger/suspend
+      - ./data/.blackdagger/data:/root/.blackdagger/data
+    command: ["sh", "-c", "/start.sh"]  # Replace with your actual start script
+    restart: unless-stopped
